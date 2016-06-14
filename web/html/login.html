@@ -52,7 +52,7 @@
 				<table>
 					<tr>
 						<td class="field">用户名：</td>
-						<td><input class="text" type="text" name="userName" onfocus="FocusItem(this)" onblur="CheckItem(this);" /><span></span></td>
+						<td><input class="text" type="text" name="loginName" onfocus="FocusItem(this)" onblur="CheckItem(this);" /><span></span></td>
 					</tr>
 					<tr>
 						<td class="field">登录密码：</td>
@@ -61,6 +61,11 @@
 					<tr>
 						<td class="field">验证码：</td>
 						<td><input class="text verycode" type="text" name="veryCode" onfocus="FocusItem(this)" onblur="CheckItem(this);" /><img id="veryCode" src="" /><span></span></td>
+					</tr>
+					<tr>
+
+						<td class="field"><input class="checkbox" type="checkbox" name="remember" checked=false id="remember"></td>
+						<td><label for="remember">保存登陆</label></td>
 					</tr>
 					<tr>
 						<td></td>

@@ -2,6 +2,9 @@ package com.easybuy.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by lenovo on 2016/6/8.
@@ -98,5 +101,21 @@ public class User implements Serializable {
 
     public void setStatus(UserStatus status) {
         this.status = status;
+    }
+
+    public Map<String, Object> getSelfDescUser(){
+        Map<String, Object> aboutMe = new HashMap<>();
+        aboutMe.put("id", id);
+        aboutMe.put("name", name);
+        aboutMe.put("password", password);
+        aboutMe.put("gender", gender);
+        aboutMe.put("birthday", birthday );
+        aboutMe.put("identityCode", identityCode);
+        aboutMe.put("email", email);
+        aboutMe.put("mobile", mobile);
+        aboutMe.put("address", address);
+        aboutMe.put("status", status);
+        
+        return aboutMe;
     }
 }

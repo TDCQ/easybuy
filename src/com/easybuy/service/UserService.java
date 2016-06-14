@@ -59,4 +59,24 @@ public interface UserService {
      */
     public User login(String loginName, String password);
 
+    /**
+     * 查询数据库中总共有多少用户
+     * @return
+     */
+    public int getUserNum();
+
+    /**
+     * 分页获取用户
+     * @param PageSize  每页的容量
+     * @param PageIndex     第几页
+     * @return
+     */
+    public List<User> getUsersPage(int PageSize, int PageIndex);
+
+    /**
+     * 根据传入的id查找用户
+     * @param id
+     * @return 用户
+     */
+    public User getUserById(String id);
 }

@@ -59,7 +59,7 @@ public class UserDaoImpl implements UserDao {
         List userInfo = getUserInfo(user);
         userInfo.add(user.getId());
 
-        flag = dButils.executeUpdate(sql, userInfo) > 0;
+        flag = dButils.executeUpdate(sql, userInfo.toArray()) > 0;
         return  flag;
     }
 
@@ -116,6 +116,27 @@ public class UserDaoImpl implements UserDao {
     }
 
     /**
+     * 获取总的用户数目
+     *
+     * @return
+     */
+    @Override
+    public int getUserNum() {
+        DButils dButils = new DButils();
+        String sql = "SELECT count(*) AS num FROM user";
+        ResultSet rs = dButils.executeQuery(sql);
+        int num = -1;
+        try {
+            if(rs.next()){
+                num = rs.getInt("num");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return num;
+    }
+
+    /**
      * 从给定用户对象中获取对象的具体信息组成ArrayList
      * @param user
      * @return
@@ -151,24 +172,88 @@ public class UserDaoImpl implements UserDao {
             Long id = rs.getLong("id");
             String name = rs.getString("name");
             String password = rs.getString("password");
-            Object gender = rs.getObject("gender");
+            String strGender = rs.getString("gender");
             Date birthday = rs.getDate("birthday");
             String identityCode = rs.getString("identityCode");
             String email = rs.getString("email");
             String mobile = rs.getString("mobile");
-            Object status = rs.getObject("status");
+            Object strStatus = rs.getObject("status");
             user.setId(id);
             user.setName(name);
             user.setPassword(password);
-            // TODO: 2016/6/12
-            user.setGender(Gender.male);
+            // 把从数据库中获取到的枚举字段(gender)转换成枚举类型
+            for(Gender gender : Gender.values()){
+                if(strGender.equals(gender.getGender())){
+                    user.setGender(gender);
+                }
+            }
+            if(user.getGender()==null){
+                user.setGender(Gender.male);
+            }
             user.setBirthday(birthday);
             user.setIdentityCode(identityCode);
             user.setEmail(email);
             user.setMobile(mobile);
-            user.setStatus(UserStatus.ADMINISTRATOR);
+            // 把从数据库中获取到的枚举字段(userStatus)转换成枚举类型
+            for(UserStatus status : UserStatus.values()){
+                if(strStatus.equals(status.getRole())){
+                    user.setStatus(status);
+                }
+            }
+            if(user.getStatus()== null){
+                user.setStatus(UserStatus.NORMAL);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 分页获取用户
+     * @param pageSize  每页的容量
+     * @param pageIndex     第几页
+     * @return
+     */
+    @Override
+    public List<User> getUsersPage(int pageSize, int pageIndex){
+        List<User> users = new ArrayList<>();
+        DButils dButils = new DButils();
+        String sql = "SELECT * FROM user LIMIT ? OFFSET ?";
+
+        ResultSet rs = dButils.executeQuery(sql, pageSize, pageIndex);
+        try {
+            while(rs.next()){
+                User user = new User();
+                updateUserFromResultSet(rs, user);
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
+    /**
+     * 根据id获取用户
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public User getUserById(Long id) {
+        User user = new User();
+        DButils dButils = new DButils();
+        //language=MySQL
+        String sql = "SELECT * FROM USER WHERE id=?";
+        ResultSet rs = dButils.executeQuery(sql, id);
+        try {
+            if(rs.next()){
+                updateUserFromResultSet(rs, user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return  user;
     }
 }

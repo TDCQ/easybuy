@@ -11,7 +11,7 @@ import java.util.List;
 public interface UserDao {
     /**
      * 添加用户
-     * @param user
+     * @param user  // 传入的user Model
      * @return      // 返回添加用户的结果：true 成功， false失败
      */
     public boolean addUser(User user);
@@ -51,4 +51,24 @@ public interface UserDao {
      */
     public List<User> getUsersByBirthday(Date date);
 
+    /**
+     * 获取总的用户数目
+     * @return
+     */
+    public int getUserNum();
+
+    /**
+     * 分页获取用户
+     * @param PageSize  每页的容量
+     * @param PageIndex     第几页
+     * @return
+     */
+    public List<User> getUsersPage(int PageSize, int PageIndex);
+
+    /**
+     * 根据id获取用户
+     * @param id
+     * @return
+     */
+    public User getUserById(Long id);
 }
