@@ -1,9 +1,13 @@
-package com.easybuy.action;
+package com.easybuy.action.userManager;
 
 import com.easybuy.model.User;
 import com.easybuy.model.UserStatus;
 import com.easybuy.service.UserService;
 import com.easybuy.service.impl.UserServiceImpl;
+import com.easybuy.util.FreeMarker;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -23,7 +27,7 @@ import java.util.Map;
  */
 @WebServlet(name = "LoginServlet.java", urlPatterns = {"/login.html", "/login-result.html"})
 public class LoginServlet extends HttpServlet {
-
+    UserService userService = new UserServiceImpl();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html; charset=UTF-8");
@@ -56,10 +60,7 @@ public class LoginServlet extends HttpServlet {
             response.addCookie(idCookie);
 
             request.setAttribute("user", user.getName());
-            // 页面转发
-//            this.getServletContext().getRequestDispatcher("/index.html").forward(request, response);
-            // 页面重定向
-            response.sendRedirect("/index.html");
+            redirect(user, response);
         }else{
             out.println("Login Fail");
             response.sendRedirect("/login.html");
@@ -67,8 +68,8 @@ public class LoginServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 设置自动登陆cookie，根据cookie中的用户名，密码登陆
-        UserService userService = new UserServiceImpl();
+        response.setContentType("text/html; charset=UTF-8");
+        // 判断从客户端传来的请求中是否有自动登陆cookie，如果有则根据cookie中的用户名，密码登陆
         getCookies(request, response);
         HttpSession session = request.getSession();
         Map<String, String> cookiesMap = (Map<String, String>)session.getAttribute("cookiesMap");
@@ -78,21 +79,11 @@ public class LoginServlet extends HttpServlet {
         if(loginName!=null && password!=null){
             user = userService.login(loginName, password);
         }
-        if(user.getId() != null){
-            log(user.getEmail() + user.getPassword() + "login Success");
 
-            if(user.getStatus()== UserStatus.ADMINISTRATOR){
-                // 如果是管理员则转向至后台首页
-                response.sendRedirect("/manage/index.html");
-            }else if(user.getStatus() == UserStatus.NORMAL) {
-                // 如果是普通用户则重定向到前台首页
-                response.sendRedirect("/index.html");
-            }
+        redirect(user, response);
 
-        }
 
         // 未设置自动登录，则输出登录表格供用户登录
-        response.setContentType("text/html; charset=UTF-8");
         ServletOutputStream out = response.getOutputStream();
         ServletContext servletContext = this.getServletContext();
         InputStream inputStream = servletContext.getResourceAsStream("/html/login.html");
@@ -119,6 +110,32 @@ public class LoginServlet extends HttpServlet {
         }
         HttpSession session = request.getSession();
         session.setAttribute("cookiesMap", cookiesMap);
+    }
+
+    protected void redirect(User user, HttpServletResponse response) throws IOException {
+        if(user.getId() != null){
+//            PrintWriter out = response.getWriter();
+//            Configuration cfg = FreeMarker.getConfiguration();
+//            Map<String, Object> root = new HashMap<>();
+//            root.put("user", user);
+//            root.put("Administrator", UserStatus.ADMINISTRATOR);
+//            Template template = cfg.getTemplate("index.ftl");
+//            try {
+//                template.process(root, out);
+//            } catch (TemplateException e) {
+//                e.printStackTrace();
+//            }
+
+            log(user.getEmail() + user.getPassword() + "login Success");
+
+            if(user.getStatus()== UserStatus.ADMINISTRATOR){
+                // 如果是管理员则转向至后台首页
+                response.sendRedirect("/manage/index.html");
+            }else if(user.getStatus() == UserStatus.NORMAL) {
+                // 如果是普通用户则重定向到前台首页
+                response.sendRedirect("/normalHome.html");
+            }
+        }
     }
 
 }

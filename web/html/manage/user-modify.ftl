@@ -89,12 +89,11 @@
             <td>
               <select id="status" name="status">
                 <#list userStatus as status>
-                  <#--<#if status.getRole() == user.status.getRole() >-->
-                    <#--<option value="${status.getRole()}" selected>${status.getRole()}</option>-->
-                  <#--<#else>-->
-                    <#--<option value="${status.getRole()}">${status.getRole()}</option>-->
-                  <#--</#if>-->
-                  <option value="${status.getRole()}">${user.status.getRole()}</option>
+                  <#if status.getRole() == user.status.getRole() >
+                    <option value="${status.getRole()}" selected>${status.getRole()}</option>
+                  <#else>
+                    <option value="${status.getRole()}">${status.getRole()}</option>
+                  </#if>
                 </#list>
               </select>
             </td>

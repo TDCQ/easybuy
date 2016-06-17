@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by lenovo on 2016/6/8.
  */
 public class Product implements Serializable {
-    private String id;
+    private int id;
     private String name;
     private String description;
     private double price;

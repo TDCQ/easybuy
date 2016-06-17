@@ -1,4 +1,4 @@
-package com.easybuy.action;
+package com.easybuy.action.userManager;
 
 import com.easybuy.model.User;
 import com.easybuy.service.UserService;
@@ -56,7 +56,7 @@ public class RegisterServlet extends HttpServlet {
         response.setContentType("text/html;charset='UTF-8'");
         OutputStream out = response.getOutputStream();
         ServletContext servletContext = this.getServletContext();
-        InputStream inputStream = servletContext.getResourceAsStream("/html/register.html");
+        InputStream inputStream = servletContext.getResourceAsStream("/html/register.ftl");
 
         byte[] array = new byte[1024];
         int len = inputStream.read(array);

@@ -182,10 +182,14 @@ public class UserDaoImpl implements UserDao {
             user.setName(name);
             user.setPassword(password);
             // 把从数据库中获取到的枚举字段(gender)转换成枚举类型
-            for(Gender gender : Gender.values()){
-                if(strGender.equals(gender.getGender())){
-                    user.setGender(gender);
+            try {
+                for (Gender gender : Gender.values()) {
+                    if (strGender.equals(gender.getGender())) {
+                        user.setGender(gender);
+                    }
                 }
+            } catch(NullPointerException e){
+
             }
             if(user.getGender()==null){
                 user.setGender(Gender.male);
@@ -195,10 +199,14 @@ public class UserDaoImpl implements UserDao {
             user.setEmail(email);
             user.setMobile(mobile);
             // 把从数据库中获取到的枚举字段(userStatus)转换成枚举类型
-            for(UserStatus status : UserStatus.values()){
-                if(strStatus.equals(status.getRole())){
-                    user.setStatus(status);
+            try {
+                for (UserStatus status : UserStatus.values()) {
+                    if (strStatus.equals(status.getRole())) {
+                        user.setStatus(status);
+                    }
                 }
+            } catch (NullPointerException e){
+
             }
             if(user.getStatus()== null){
                 user.setStatus(UserStatus.NORMAL);
@@ -219,8 +227,9 @@ public class UserDaoImpl implements UserDao {
         List<User> users = new ArrayList<>();
         DButils dButils = new DButils();
         String sql = "SELECT * FROM user LIMIT ? OFFSET ?";
+        int offset = pageIndex * pageSize;
 
-        ResultSet rs = dButils.executeQuery(sql, pageSize, pageIndex);
+        ResultSet rs = dButils.executeQuery(sql, pageSize, offset);
         try {
             while(rs.next()){
                 User user = new User();
